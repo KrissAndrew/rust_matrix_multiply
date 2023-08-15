@@ -45,17 +45,6 @@ fn main() -> std::io::Result<()> {
     }
 
     if matches.is_present("check") {
-        // Performing matrix multiplication between matrices A and B, storing the result in matrix C
-        for i in 0..n {
-            for j in 0..n {
-                let mut total = 0.0;
-                for k in 0..n {
-                    total += a[i][k] * b[k][j];
-                }
-                c[i][j] = total;
-            }
-        }
-
         // Read matrix D from binary file
         let mut file = File::open("log.bin")?;
         let mut d: Vec<Vec<f64>> = vec![vec![0.0; n]; n];
@@ -67,13 +56,24 @@ fn main() -> std::io::Result<()> {
             }
         }
 
+        // Performing matrix multiplication between matrices A and B, storing the result in matrix C
         for i in 0..n {
             for j in 0..n {
-                // println!("c[0][0]: {}", c[0][0]);
-                // println!("d[0][0]: {}", d[0][0]);
+                let mut total = 0.0;
+                for k in 0..n {
+                    total += a[i][k] * b[k][j];
+                }
+                c[i][j] = total;
+            }
+        }
+
+        // Assert equality using binary file
+        for i in 0..n {
+            for j in 0..n {
                 assert!(c[i][j] == d[i][j], "Mismatch at ({}, {})", i, j);
             }
         }
+
         println!("No mismatches found");
     } else {
         // Performing matrix multiplication between matrices A and B, storing the result in matrix C
